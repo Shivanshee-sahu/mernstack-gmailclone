@@ -4,24 +4,18 @@ import { FaCaretDown, FaUserFriends } from "react-icons/fa"
 import { IoMdMore, IoMdRefresh } from 'react-icons/io'
 import { GoTag } from "react-icons/go";
 import Emails from './Emails';
+import { useNavigate } from 'react-router-dom';
 
 const mailType = [
     {
         icon: <MdInbox size={'20px'} />,
         text: "Primary"
-    },
-    {
-        icon: <GoTag size={'20px'} />,
-        text: "Promotions"
-    },
-    {
-        icon: <FaUserFriends size={'20px'} />,
-        text: "Social"
-    },
+    }
 ]
 
 const Inbox = () => {
     const [selected, setSelected] = useState(0);
+    const navigate = useNavigate();
     return (
         <div className='flex-1 bg-white rounded-xl mx-5'>
             <div className='flex items-center justify-between px-4 my-2'>

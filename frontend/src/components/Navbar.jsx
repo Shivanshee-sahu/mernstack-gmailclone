@@ -40,8 +40,10 @@ const Navbar = () => {
                     <div className='p-3 hover:bg-gray-200 rounded-full cursor-pointer'>
                         <RxHamburgerMenu />
                     </div>
-                    <img className='w-8' src="https://mailmeteor.com/logos/assets/PNG/Gmail_Logo_512px.png" alt="logo" />
-                    <h1 className='text-2xl text-gray-500 font-medium'>Gmail</h1>
+                    <a className="navbar-brand self-center">
+    <img className="w-29 h-10" src="https://gofloww.co/img/logo/logo.png" alt="logo" />
+</a>
+                   
                 </div>
             </div>
             {
@@ -60,9 +62,7 @@ const Navbar = () => {
                             </div>
                         </div>
                         <div className='flex items-center gap-2'>
-                            <div className='p-2 rounded-full hover:bg-gray-200 cursor-pointer'>
-                                <CiCircleQuestion size={'24px'} />
-                            </div>
+                          
                             <div className='p-2 rounded-full hover:bg-gray-200 cursor-pointer'>
                                 <IoIosSettings size={'24px'} />
                             </div>
