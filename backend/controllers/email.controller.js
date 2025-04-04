@@ -1,28 +1,40 @@
 import mongoose from "mongoose";
-
 import { Email } from "../models/email.model.js";
-
 
 export const createEmail = async (req, res) => {
     try {
-        const userId = req.user.id; // Ensure it's extracted correctly
-        const { to, subject, message, aiGenerated = false } = req.body;
+        const {
+            threadId,
+            messageId,
+            from,
+            to,
+            subject,
+            body,
+            time,
+            date,
+            aiGenerated = false
+        } = req.body;
 
-        if (!to || !subject || !message) {
+        // Validate all required fields
+        if (!threadId || !messageId || !from || !to || !subject || !body || !time || !date) {
             return res.status(400).json({ message: "All fields are required", success: false });
         }
 
         const email = await Email.create({
+            threadId,
+            messageId,
+            from,
             to,
             subject,
-            message,
-            userId,
+            body,
+            time,
+            date,
             aiGenerated
         });
 
-        return res.status(201).json({ email });
+        return res.status(201).json({ email, success: true });
     } catch (error) {
-        console.error(error);
+        console.error("Error in createEmail:", error);
         return res.status(500).json({ message: "Server error", success: false });
     }
 };
@@ -42,10 +54,9 @@ export const deleteEmail = async (req, res) => {
     }
 };
 
-// ✅ Fixed: Get all emails for the authenticated user
 export const getAllEmailsByUser = async (req, res) => {
     try {
-        const userId = req.user?.id; 
+        const userId = req.user?.id;
         const emails = await Email.find({ userId }).sort({ createdAt: -1 });
 
         return res.status(200).json({ emails });
@@ -55,7 +66,6 @@ export const getAllEmailsByUser = async (req, res) => {
     }
 };
 
-// ✅ Fixed: Remove empty response, return real emails
 export const getAllEmailById = async (req, res) => {
     try {
         const userId = req.user.id;
@@ -76,7 +86,6 @@ export const generateAIEmail = async (req, res) => {
             return res.status(400).json({ message: "Subject is required." });
         }
 
-        // Dummy AI Response
         const generatedMessage = `Dear Recipient,\n\nThis is an AI-generated email regarding "${subject}". Let me know your thoughts.\n\nBest regards,\nYour AI Assistant`;
 
         return res.status(200).json({ generatedMessage });

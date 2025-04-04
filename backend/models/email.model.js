@@ -1,6 +1,9 @@
 import mongoose from "mongoose";
-
 const emailSchema = new mongoose.Schema({
+    from: {
+        type: String,
+        required: true
+    },
     to: {
         type: String,
         required: true
@@ -13,11 +16,6 @@ const emailSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    userId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
-        required: true
-    },
     aiGenerated: {
         type: Boolean,
         default: false
@@ -27,4 +25,8 @@ const emailSchema = new mongoose.Schema({
         default: ""
     }
 }, { timestamps: true });
+
 export const Email = mongoose.model("Email", emailSchema);
+
+
+

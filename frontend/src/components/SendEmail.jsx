@@ -4,7 +4,29 @@ import toast from 'react-hot-toast';
 import axios from 'axios';
 
 const SendEmail = ({ open, setOpen, setEmails, emails }) => {
-    const [formData, setFormData] = useState({ to: "", subject: "", message: "" });
+    const generateId = () => Math.random().toString(36).substring(2, 12);
+
+    const getCurrentTime = () => {
+        const now = new Date();
+        return now.toTimeString().slice(0, 5);
+    };
+
+    const getCurrentDate = () => {
+        const now = new Date();
+        return `${String(now.getDate()).padStart(2, '0')}/${String(now.getMonth() + 1).padStart(2, '0')}/${now.getFullYear()}`;
+    };
+
+    const [formData, setFormData] = useState({
+        threadId: generateId(),
+        messageId: generateId(),
+        from: "",
+        to: "",
+        subject: "",
+        message: "",
+        time: getCurrentTime(),
+        date: getCurrentDate()
+    });
+
     const [loading, setLoading] = useState(false);
 
     const changeHandler = (e) => {
@@ -13,19 +35,43 @@ const SendEmail = ({ open, setOpen, setEmails, emails }) => {
 
     const submitHandler = async (e) => {
         e.preventDefault();
+
         try {
-            const res = await axios.post("http://localhost:8080/api/v1/email/create", formData, {
+            const updatedData = {
+                ...formData,
+                time: getCurrentTime(),
+                date: getCurrentDate(),
+                messageId: generateId(),
+                threadId: formData.threadId || generateId(),
+                aiGenerated: false
+            };
+
+            console.log("Form Data Being Sent:", updatedData);
+
+            const res = await axios.post("http://localhost:8080/api/v1/email/create", updatedData, {
                 headers: { 'Content-Type': "application/json" },
                 withCredentials: true
             });
+
             setEmails([...emails, res.data.email]);
             toast.success("Email sent successfully!");
-            setFormData({ to: "", subject: "", message: "" }); // Reset form after sending
+
+            // Reset form
+            setFormData({
+                threadId: generateId(),
+                messageId: generateId(),
+                from: "",
+                to: "",
+                subject: "",
+                message: "",
+                time: getCurrentTime(),
+                date: getCurrentDate()
+            });
+            setOpen(false);
         } catch (error) {
-            console.log(error);
+            console.error(error);
             toast.error(error.response?.data?.message || "Failed to send email.");
         }
-        setOpen(false);
     };
 
     const generateAIEmail = async () => {
@@ -35,10 +81,11 @@ const SendEmail = ({ open, setOpen, setEmails, emails }) => {
                 headers: { 'Content-Type': "application/json" },
                 withCredentials: true
             });
+
             setFormData({ ...formData, message: res.data.generatedMessage });
             toast.success("AI-generated email ready!");
         } catch (error) {
-            console.log(error);
+            console.error(error);
             toast.error("AI generation failed.");
         }
         setLoading(false);
@@ -54,9 +101,10 @@ const SendEmail = ({ open, setOpen, setEmails, emails }) => {
                     </div>
                 </div>
                 <form onSubmit={submitHandler} className='flex flex-col gap-4'>
-                    <input onChange={changeHandler} value={formData.to} name="to" type="text" placeholder='To' className='outline-none py-2 border-b' />
-                    <input onChange={changeHandler} value={formData.subject} name="subject" type="text" placeholder='Subject' className='outline-none py-2 border-b' />
-                    <textarea onChange={changeHandler} value={formData.message} name="message" rows='6' className='outline-none py-2 border rounded-lg'></textarea>
+                    <input name="from" onChange={changeHandler} value={formData.from} type="email" placeholder='From' className='outline-none py-2 border-b' required />
+                    <input name="to" onChange={changeHandler} value={formData.to} type="email" placeholder='To' className='outline-none py-2 border-b' required />
+                    <input name="subject" onChange={changeHandler} value={formData.subject} type="text" placeholder='Subject' className='outline-none py-2 border-b' required />
+                    <textarea name="message" onChange={changeHandler} value={formData.message} rows='6' placeholder="Message body" className='outline-none py-2 border rounded-lg' required />
 
                     <div className="flex gap-3">
                         <button type='submit' className='bg-blue-700 rounded-full px-5 py-2 text-white'>Send</button>
