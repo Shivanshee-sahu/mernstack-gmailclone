@@ -1,16 +1,15 @@
 import React, { useState } from 'react';
-import { IoMdStar } from 'react-icons/io';
 import { LuPencil } from "react-icons/lu";
-import { MdInbox, MdOutlineWatchLater } from "react-icons/md";
-import { TbSend2 } from 'react-icons/tb';
+import { MdInbox, MdContacts, MdSettings, MdInfo } from "react-icons/md";
 import { useNavigate } from 'react-router-dom';
 import SendEmail from './SendEmail';
 
 const sidebarItems = [
-    { icon: <MdInbox size={'20px'} />, text: "Inbox", path: "/" },
-    { icon: <IoMdStar size={'20px'} />, text: "Starred", path: "/starred" },
-    { icon: <MdOutlineWatchLater size={'20px'} />, text: "Snoozed", path: "/snoozed" },
-    { icon: <TbSend2 size={'20px'} />, text: "Sent", path: "/sent" }
+    { icon: <MdInbox size={'20px'} />, text: "Mails", path: "/" },
+    { icon: <MdContacts size={'20px'} />, text: "Contacts", path: "/contacts" },
+
+    { icon: <MdSettings size={'20px'} />, text: "Settings", path: "/settings" },
+    { icon: <MdInfo size={'20px'} />, text: "About", path: "/about" }
 ];
 
 const Sidebar = () => {
@@ -20,23 +19,26 @@ const Sidebar = () => {
 
     return (
         <>
-            <div className='w-[15%]'>
+            <div 
+                className='w-[15%] min-h-screen text-white' 
+                style={{ backgroundImage: "linear-gradient(90deg, #6936D6 0%, #152A65 100%)" }}
+            >
                 <div className='p-3'>
-                    <button
-                        onClick={() => setOpen(true)}
-                        className="flex items-center gap-2 p-4 rounded-2xl shadow-custom-box-shadow hover:shadow-secondary-btn ease-in duration-300"
-                        style={{ backgroundImage: "linear-gradient(90deg, #00ceb1 0%, #1e92fb 100%)" }}
-                    >
-                        <LuPencil size="24px" color="white" />
-                        <span className="text-white">Compose</span>
-                    </button>
+                <button
+  onClick={() => setOpen(true)}
+  className="flex items-center gap-2 w-[82%] mx-auto p-4 rounded-2xl shadow-custom-box-shadow hover:shadow-secondary-btn ease-in duration-300 bg-white"
+>
+  <LuPencil size="25px" color="#6936D6" />
+  <span className="text-[#6936D6] font-semibold">Compose</span>
+</button>
+
                 </div>
-                <div className='text-gray-600'>
+                <div className=''>
                     {sidebarItems.map((item, index) => (
                         <div 
                             key={index}
                             onClick={() => navigate(item.path)}
-                            className='flex items-center pl-6 py-1 rounded-r-full gap-4 my-2 hover:cursor-pointer hover:bg-gray-200'
+                            className='flex items-center pl-6 py-2 rounded-r-full gap-4 my-2 hover:cursor-pointer hover:bg-[#ffffff30]'
                         >
                             {item.icon}
                             <p>{item.text}</p>

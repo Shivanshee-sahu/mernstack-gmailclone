@@ -4,9 +4,8 @@ import useGetAllEmails from '../hooks/useGetAllEmails';
 import { useSelector } from 'react-redux';
 
 const Emails = () => {
-  // Custom hook to fetch emails
   useGetAllEmails();
-  
+
   const { emails, searchText } = useSelector((store) => store.app);
   const [filteredEmails, setFilteredEmails] = useState([]);
 
@@ -15,7 +14,7 @@ const Emails = () => {
       const filtered = emails.filter((email) =>
         email.subject?.toLowerCase().includes(searchText.toLowerCase()) ||
         email.to?.toLowerCase().includes(searchText.toLowerCase()) ||
-        email.body?.toLowerCase().includes(searchText.toLowerCase())  // ✅ Fixed field name
+        email.body?.toLowerCase().includes(searchText.toLowerCase())
       );
       setFilteredEmails(filtered);
     } else {
@@ -24,11 +23,15 @@ const Emails = () => {
   }, [searchText, emails]);
 
   return (
-    <div>
+    <div className="p-2 space-y-2">
       {filteredEmails.length > 0 ? (
-        filteredEmails.map((email) => <Email key={email._id} email={email} />)
+        filteredEmails.map((email) => (
+          <div key={email._id} className="bg-white shadow-sm rounded-lg p-4 hover:shadow-md transition-all duration-200">
+            <Email email={email} />
+          </div>
+        ))
       ) : (
-        <p className="text-center text-gray-500 mt-4">No emails found.</p>
+        <p className="text-center text-gray-500 mt-10">No emails found.</p>
       )}
     </div>
   );
